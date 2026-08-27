@@ -96,7 +96,7 @@ export function Generating() {
 
     const preDeduct = consumeCredit();
 
-    startTransition(async () => {
+    (async () => {
       try {
         const payload = {
           personImageDataUrl: personPhotoUrl,
@@ -120,19 +120,21 @@ export function Generating() {
           message: res.ok ? undefined : (res as ActionError).message,
           resultUrl: res.ok ? res.data.result.resultImageUrl.slice(0, 64) + '…' : undefined,
         });
-        if (!res.ok) {
-          handleFailure(res, preDeduct.remaining >= needCredits);
-          dispatch({ type: 'GENERATE_PROGRESS', payload: 100 });
-          return;
-        }
-        dispatch({ type: 'GENERATE_PROGRESS', payload: 97 });
-        dispatch({ type: 'CATEGORY_DETECTED', payload: res.data.category });
-        dispatch({
-          type: 'GENERATE_SUCCESS',
-          payload: {
-            category: res.data.category,
-            result: res.data.result,
-          },
+        startTransition(() => {
+          if (!res.ok) {
+            handleFailure(res, preDeduct.remaining >= needCredits);
+            dispatch({ type: 'GENERATE_PROGRESS', payload: 100 });
+            return;
+          }
+          dispatch({ type: 'GENERATE_PROGRESS', payload: 97 });
+          dispatch({ type: 'CATEGORY_DETECTED', payload: res.data.category });
+          dispatch({
+            type: 'GENERATE_SUCCESS',
+            payload: {
+              category: res.data.category,
+              result: res.data.result,
+            },
+          });
         });
       } catch (e) {
         window.clearTimeout(timerId);
@@ -141,20 +143,22 @@ export function Generating() {
           console.error('[Generating]   name=', e.name, 'message=', e.message);
           console.error('[Generating]   stack=', e.stack);
         }
-        handleFailure(
-          {
-            ok: false,
-            code: 'UNKNOWN',
-            message: userMessageForCode('UNKNOWN'),
-            retryable: true,
-          },
-          true,
-        );
-        dispatch({ type: 'GENERATE_PROGRESS', payload: 100 });
+        startTransition(() => {
+          handleFailure(
+            {
+              ok: false,
+              code: 'UNKNOWN',
+              message: userMessageForCode('UNKNOWN'),
+              retryable: true,
+            },
+            true,
+          );
+          dispatch({ type: 'GENERATE_PROGRESS', payload: 100 });
+        });
       } finally {
         triggeredRef.current = false;
       }
-    });
+    })();
 
     return () => {
       window.clearTimeout(timerId);
