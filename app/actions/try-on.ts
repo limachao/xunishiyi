@@ -11,23 +11,13 @@ import {
   makeRequestId,
 } from '@/services/ai-try-on';
 import type { ClothingCategory, TryResult } from '@/types/game';
-
-export interface ValidatedUpload {
-  ok: true;
-  /** Server-validated, stable URL: in-memory data URL for now; swap to R2/S3 signed URL later */
-  url: string;
-  bytes: number;
-  mime: string;
-}
-
-export interface ActionError {
-  ok: false;
-  code: TryOnError['code'];
-  message: string;
-  retryable: boolean;
-}
-
-type ActionResult<T> = { ok: true; data: T } | ActionError;
+import type {
+  ActionError,
+  ActionResult,
+  GenerateTryOnInput,
+  GenerateTryOnOutput,
+  ValidatedUpload,
+} from '@/lib/try-on-types';
 
 function toError(err: unknown): ActionError {
   if (err instanceof TryOnError) {
@@ -93,27 +83,6 @@ export async function validateAndStoreImage(
   } catch (err) {
     return toError(err);
   }
-}
-
-export interface GenerateTryOnInput {
-  /** Data URL already produced by validateAndStoreImage (avoids re-uploading from client). */
-  personImageDataUrl: string;
-  clothingImageDataUrl: string;
-  personFilename?: string;
-  clothingFilename?: string;
-  creditsRequired?: number;
-  /** Client-reported remaining credits BEFORE this call. Server double-checks against DB in future. */
-  clientRemainingCredits?: number;
-}
-
-export interface GenerateTryOnOutput {
-  requestId: string;
-  result: TryResult;
-  category: ClothingCategory;
-  outputQuality: 'standard' | 'hd';
-  watermarked?: boolean;
-  /** Credits after server-side deduction. For MVP this echoes the client deduction back. */
-  creditsAfter: { used: number; remaining: number } | null;
 }
 
 export async function generateTryOn(
