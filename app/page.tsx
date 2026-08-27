@@ -74,39 +74,78 @@ export default function HomePage() {
             <div className="relative h-full w-full overflow-hidden rounded-[1.6rem] border border-white/8 bg-gradient-to-br from-[oklch(0.22_0.02_155_/_0.8)] via-[oklch(0.2_0.015_155_/_0.6)] to-[oklch(0.18_0.02_20_/_0.8)]">
               <div className="absolute inset-0 bg-[radial-gradient(600px_300px_at_20%_20%,_oklch(0.62_0.11_195_/_0.25),_transparent_60%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(500px_300px_at_85%_80%,_oklch(0.42_0.09_155_/_0.28),_transparent_60%)]" />
-              <div className="relative grid h-full grid-cols-5 gap-3 p-6 md:p-8">
-                <div className="col-span-2 flex flex-col gap-3">
-                  <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/50">你的照片</div>
-                  <div className="flex-1 overflow-hidden rounded-[1.2rem] border border-white/10 bg-white/[0.03]">
-                    <div className="h-full w-full bg-[radial-gradient(ellipse_at_top,_oklch(0.42_0.14_200_/_0.5),_oklch(0.12_0.01_155))] flex items-end p-4">
-                      <div className="space-y-1 text-left">
-                        <div className="h-3 w-20 rounded-full bg-white/20" />
-                        <div className="h-2 w-14 rounded-full bg-white/10" />
-                      </div>
-                    </div>
+              <div className="relative grid h-full grid-cols-3 gap-3 p-5 md:p-7">
+                {/* 输入区：你的照片 */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-white/50">
+                    <User className="h-3 w-3" /> 你的照片
+                  </div>
+                  <div className="relative flex-1 overflow-hidden rounded-[1.1rem] border border-white/10 bg-gradient-to-b from-[oklch(0.32_0.04_40_/_0.6)] via-[oklch(0.26_0.03_30_/_0.5)] to-[oklch(0.16_0.01_20_/_0.7)]">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,_oklch(0.5_0.06_40_/_0.3),_transparent_70%)]" />
+                    <svg viewBox="0 0 100 155" className="absolute inset-0 m-auto h-[85%] w-auto" preserveAspectRatio="xMidYMid meet">
+                      <defs>
+                        <linearGradient id="skinA" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="oklch(0.78 0.05 50)" />
+                          <stop offset="100%" stopColor="oklch(0.68 0.06 45)" />
+                        </linearGradient>
+                        <linearGradient id="bodyA" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="oklch(0.52 0.02 30)" stopOpacity="0.9" />
+                          <stop offset="100%" stopColor="oklch(0.4 0.02 30)" stopOpacity="0.7" />
+                        </linearGradient>
+                      </defs>
+                      <circle cx="50" cy="20" r="13" fill="url(#skinA)" />
+                      <path d="M33 38 Q50 32 67 38 L70 95 Q50 103 30 95 Z" fill="url(#bodyA)" />
+                      <path d="M33 38 L24 44 L22 82 L30 88 L33 60 Z" fill="url(#bodyA)" opacity="0.75" />
+                      <path d="M67 38 L76 44 L78 82 L70 88 L67 60 Z" fill="url(#bodyA)" opacity="0.75" />
+                      <rect x="40" y="95" width="9" height="40" rx="4" fill="oklch(0.35 0.02 30)" opacity="0.6" />
+                      <rect x="51" y="95" width="9" height="40" rx="4" fill="oklch(0.35 0.02 30)" opacity="0.6" />
+                    </svg>
                   </div>
                 </div>
-                <div className="col-span-1 flex items-center justify-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[oklch(0.62_0.11_195_/_0.16)] text-white border border-white/15 backdrop-blur-xl shadow-[0_1px_0_rgba(255,255,255,0.18)_inset,0_12px_32px_-10px_oklch(0.62_0.11_195_/_0.55)]">
+
+                {/* 中间：AI 处理 */}
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[oklch(0.62_0.11_195_/_0.16)] text-white border border-white/15 backdrop-blur-xl shadow-[0_1px_0_rgba(255,255,255,0.18)_inset,0_12px_32px_-10px_oklch(0.62_0.11_195_/_0.55)]">
                     <Wand2 className="h-5 w-5" />
                   </div>
+                  <div className="h-16 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />
+                  <span className="text-[10px] text-white/40">AI 试穿</span>
                 </div>
-                <div className="col-span-2 flex flex-col gap-3">
-                  <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/50">服装</div>
-                  <div className="flex-1 overflow-hidden rounded-[1.2rem] border border-white/10 bg-white/[0.03]">
-                    <div className="h-full w-full bg-[radial-gradient(ellipse_at_bottom,_oklch(0.65_0.24_20_/_0.45),_oklch(0.15_0.01_20))] flex items-end p-4">
-                      <div className="space-y-1 text-left">
-                        <div className="h-3 w-16 rounded-full bg-white/20" />
-                        <div className="h-2 w-10 rounded-full bg-white/10" />
-                      </div>
-                    </div>
+
+                {/* 两个效果展示 */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-white/50">
+                    <Sparkles className="h-3 w-3" /> 试穿效果
                   </div>
-                </div>
-                <div className="col-span-5 flex items-center justify-center gap-4 py-2">
-                  <div className="h-1.5 w-28 overflow-hidden rounded-full bg-white/8">
-                    <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-[oklch(0.58_0.1_195)] to-[oklch(0.68_0.11_195)] shadow-[0_0_14px_oklch(0.68_0.11_195_/_0.6)]" />
+                  {/* 效果 1：上衣 */}
+                  <div className="relative flex-1 overflow-hidden rounded-[1.1rem] border border-white/10 bg-gradient-to-b from-[oklch(0.28_0.05_195_/_0.6)] to-[oklch(0.16_0.01_195_/_0.7)]">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,_oklch(0.45_0.1_195_/_0.25),_transparent_70%)]" />
+                    <svg viewBox="0 0 100 155" className="absolute inset-0 m-auto h-[85%] w-auto" preserveAspectRatio="xMidYMid meet">
+                      <circle cx="50" cy="20" r="13" fill="url(#skinA)" />
+                      {/* 穿着上衣的身体 */}
+                      <path d="M33 38 Q50 32 67 38 L70 70 Q50 78 30 70 Z" fill="oklch(0.55 0.12_195)" opacity="0.92" />
+                      <path d="M33 38 L24 44 L22 72 L30 78 L33 55 Z" fill="oklch(0.5 0.11_195)" opacity="0.85" />
+                      <path d="M67 38 L76 44 L78 72 L70 78 L67 55 Z" fill="oklch(0.5 0.11_195)" opacity="0.85" />
+                      <path d="M30 70 Q50 78 70 70 L70 95 Q50 103 30 95 Z" fill="oklch(0.35 0.02 30)" opacity="0.7" />
+                      <rect x="40" y="95" width="9" height="40" rx="4" fill="oklch(0.35 0.02 30)" opacity="0.6" />
+                      <rect x="51" y="95" width="9" height="40" rx="4" fill="oklch(0.35 0.02 30)" opacity="0.6" />
+                    </svg>
+                    <span className="absolute bottom-2 right-2 rounded-full bg-black/40 px-2 py-0.5 text-[10px] text-white/70 backdrop-blur-sm">上衣</span>
                   </div>
-                  <span className="text-[12px] text-white/60">AI 生成中 78%</span>
+                  {/* 效果 2：连衣裙 */}
+                  <div className="relative h-[42%] overflow-hidden rounded-[1.1rem] border border-white/10 bg-gradient-to-b from-[oklch(0.3_0.08_350_/_0.6)] to-[oklch(0.16_0.01_350_/_0.7)]">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,_oklch(0.5_0.15_350_/_0.22),_transparent_70%)]" />
+                    <svg viewBox="0 0 100 155" className="absolute inset-0 m-auto h-[85%] w-auto" preserveAspectRatio="xMidYMid meet">
+                      <circle cx="50" cy="18" r="12" fill="url(#skinA)" />
+                      {/* 连衣裙 */}
+                      <path d="M34 34 Q50 28 66 34 L72 40 L80 105 Q50 115 20 105 L28 40 Z" fill="oklch(0.58 0.14 350)" opacity="0.92" />
+                      <path d="M34 34 L25 40 L23 60 L32 55 L34 38 Z" fill="oklch(0.52 0.13_350)" opacity="0.82" />
+                      <path d="M66 34 L75 40 L77 60 L68 55 L66 38 Z" fill="oklch(0.52 0.13_350)" opacity="0.82" />
+                      <rect x="41" y="100" width="8" height="35" rx="4" fill="oklch(0.35 0.02 30)" opacity="0.6" />
+                      <rect x="51" y="100" width="8" height="35" rx="4" fill="oklch(0.35 0.02 30)" opacity="0.6" />
+                    </svg>
+                    <span className="absolute bottom-2 right-2 rounded-full bg-black/40 px-2 py-0.5 text-[10px] text-white/70 backdrop-blur-sm">连衣裙</span>
+                  </div>
                 </div>
               </div>
             </div>
