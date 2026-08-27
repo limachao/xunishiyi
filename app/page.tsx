@@ -44,7 +44,7 @@ export default function HomePage() {
             买之前一定要
             <br className="md:hidden" />
             <span className="mx-0.5 md:mx-2.5 inline-block bg-gradient-to-r from-[oklch(0.68_0.11_195)] via-[oklch(0.64_0.1_190)] to-[oklch(0.62_0.11_200)] bg-clip-text text-transparent drop-shadow-[0_0_40px_oklch(0.62_0.11_195_/_0.35)]">
-              先试一下
+              先穿在身上试一下
             </span>
           </h1>
 
