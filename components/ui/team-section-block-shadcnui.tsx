@@ -5,47 +5,14 @@ import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 const teamMembers = [
   {
-    name: '张明',
+    name: '马超',
     role: '创始人 & CEO',
     bio: '十年电商行业经验，前某头部服饰品牌数字化负责人，致力于用 AI 改变购物决策方式。',
-    avatar: 'ZM',
+    avatar: '/images/avatar.png',
     gradient: 'from-[oklch(0.62_0.11_195_/_0.25)] to-[oklch(0.42_0.09_155_/_0.15)]',
     socials: [
       { icon: Twitter, label: 'Twitter', href: '#' },
       { icon: Github, label: 'Github', href: '#' },
-    ],
-  },
-  {
-    name: '李思',
-    role: 'AI 算法负责人',
-    bio: '计算机视觉硕士，深耕图像生成与虚拟试衣领域，曾参与多个大规模 AI 模型训练项目。',
-    avatar: 'LS',
-    gradient: 'from-[oklch(0.55_0.15_195_/_0.25)] to-[oklch(0.5_0.11_175_/_0.15)]',
-    socials: [
-      { icon: Github, label: 'Github', href: '#' },
-      { icon: Linkedin, label: 'Linkedin', href: '#' },
-    ],
-  },
-  {
-    name: '王浩',
-    role: '全栈工程师',
-    bio: '全栈开发者，热爱开源社区，专注于高性能 Web 架构与用户体验优化。',
-    avatar: 'WH',
-    gradient: 'from-[oklch(0.5_0.11_175_/_0.25)] to-[oklch(0.45_0.1_200_/_0.15)]',
-    socials: [
-      { icon: Github, label: 'Github', href: '#' },
-      { icon: Mail, label: 'Email', href: '#' },
-    ],
-  },
-  {
-    name: '陈雪',
-    role: '产品设计',
-    bio: '前 Apple 设计团队顾问，擅长将复杂技术转化为直觉式交互，追求极简而有温度的设计。',
-    avatar: 'CX',
-    gradient: 'from-[oklch(0.48_0.1_200_/_0.25)] to-[oklch(0.62_0.11_195_/_0.15)]',
-    socials: [
-      { icon: Twitter, label: 'Twitter', href: '#' },
-      { icon: Linkedin, label: 'Linkedin', href: '#' },
     ],
   },
 ];
@@ -65,7 +32,7 @@ export function TeamSectionBlock() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 mx-auto max-w-sm">
         {teamMembers.map((member) => (
           <div
             key={member.name}
@@ -83,9 +50,13 @@ export function TeamSectionBlock() {
             <div className="relative flex h-full flex-col overflow-hidden rounded-xl border border-white/8 bg-[oklch(0.14_0.008_155_/_0.7)] p-6 backdrop-blur-xl">
               <div className="flex flex-1 flex-col items-center text-center">
                 <div
-                  className={`mb-5 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${member.gradient} text-2xl font-bold text-white border border-white/15`}
+                  className={`mb-5 flex h-28 w-28 items-center justify-center rounded-2xl bg-gradient-to-br ${member.gradient} text-2xl font-bold text-white border border-white/15 overflow-hidden`}
                 >
-                  {member.avatar}
+                  {member.avatar.startsWith('/') ? (
+                    <img src={member.avatar} alt={member.name} className="h-full w-full object-cover" />
+                  ) : (
+                    member.avatar
+                  )}
                 </div>
                 <h3 className="text-lg font-semibold tracking-tight text-foreground">
                   {member.name}
