@@ -5,7 +5,7 @@ import { GameProvider } from '@/contexts/GameContext';
 
 export const metadata: Metadata = {
   title: {
-    default: 'FitMate AI — 先试后买，AI 虚拟试衣',
+    default: 'FitMate AI — 买之前一定要先试一下，AI 虚拟试衣',
     template: '%s | FitMate AI',
   },
   description:
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     locale: 'zh_CN',
     url: 'https://fitmate.ai',
     siteName: 'FitMate AI',
-    title: 'FitMate AI — 先试后买，AI 虚拟试衣',
+    title: 'FitMate AI — 买之前一定要先试一下，AI 虚拟试衣',
     description:
       '买之前先看上身效果，免费试 5 次，AI 生成真实穿搭预览。',
   },
