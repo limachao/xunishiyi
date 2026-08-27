@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ClothingCategory {
+  TOP
+  BOTTOM
+  DRESS
+  UNKNOWN
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO_MONTHLY
+  PRO_YEARLY
+  PREMIUM_MONTHLY
+  PREMIUM_YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  EXPIRED
+  TRIALING
+}
+
+enum UsageLogReason {
+  GENERATE
+  REGENERATE
+  REFUND_FAILURE
+  REFUND_ADMIN
+  CREDIT_PACK
+  SUBSCRIPTION_RESET
+}
+
+model User {
+  id             String         @id @default(cuid())
+  email          String         @unique
+  name           String?
+  image          String?
+  hashedPassword String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  subscription   Subscription?
+  usage          UsageInfo?
+  history        HistoryItem[]
+  uploads        Upload[]
+  usageLogs      UsageLog[]
+
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Subscription {
+  id             String              @id @default(cuid())
+  userId         String              @unique
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan           SubscriptionPlan    @default(FREE)
+  status         SubscriptionStatus  @default(ACTIVE)
+  stripeCustomerId    String?         @unique
+  stripeSubscriptionId String?       @unique
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelAtPeriodEnd   Boolean         @default(false)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+
+model UsageInfo {
+  id             String         @id @default(cuid())
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String         @unique
+  totalCredits   Int            @default(5)
+  usedCredits    Int            @default(0)
+  bonusCredits   Int            @default(0)
+  lastResetAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+model HistoryItem {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personImageUrl String
+  clothingImageUrl String
+  resultImageUrl String
+  category       ClothingCategory
+  generationMs   Int?
+  outputQuality  String?         @default("standard")
+  isWatermarked  Boolean         @default(true)
+  usageLogs      UsageLog[]
+  createdAt      DateTime        @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+enum UploadType {
+  PERSON
+  CLOTHING
+}
+
+model Upload {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type           UploadType
+  url            String
+  thumbnailUrl   String?
+  filename       String?
+  sizeBytes      Int?
+  category       ClothingCategory?
+  lastUsedAt     DateTime?
+  createdAt      DateTime        @default(now())
+
+  @@index([userId, type, createdAt(sort: Desc)])
+}
+
+model UsageLog {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delta          Int
+  reason         UsageLogReason
+  remainingAfter Int
+  relatedHistoryId String?
+  relatedHistory HistoryItem?    @relation(fields: [relatedHistoryId], references: [id], onDelete: SetNull)
+  stripeInvoiceId String?
+  note           String?
+  createdAt      DateTime        @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([reason])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
