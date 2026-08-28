@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ImageUploader, type ImageSample } from '@/components/ui/image-uploader';
 import { QuotaExceededModal } from '@/components/subscription/quota-exceeded-modal';
+import { useAuthGate } from '@/components/auth/auth-gate-provider';
 
 const CLOTHING_SAMPLES: ImageSample[] = [
   {
@@ -35,6 +36,7 @@ const CLOTHING_SAMPLES: ImageSample[] = [
 
 export function StepClothing() {
   const { session, dispatch, hasEnoughCredits } = useGame();
+  const { requireAuth } = useAuthGate();
   const [quotaOpen, setQuotaOpen] = React.useState(false);
 
   const hasPerson = Boolean(session.personPhotoUrl);
@@ -113,6 +115,7 @@ export function StepClothing() {
           maxSizeMb={10}
           samples={CLOTHING_SAMPLES}
           error={session.error}
+          onBeforePick={requireAuth}
           onFileChange={handleClothingChange}
           onClear={handleClothingClear}
           tips={[

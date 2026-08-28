@@ -135,6 +135,16 @@
       0 40px 80px -24px oklch(0 0 0 / 0.7),
       0 24px 48px -24px oklch(0 0 0 / 0.6);
   }
+  /* 半透明悬浮玻璃弹窗（登录/注册等） */
+  .dialog-glass {
+    background: oklch(0.13 0.015 155 / 0.55);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border: 1px solid oklch(1 0 0 / 12%);
+    box-shadow:
+      0 0 0 1px oklch(1 0 0 / 6%) inset,
+      0 48px 140px -24px oklch(0 0 0 / 0.85);
+  }
   .glass-soft {
     background: oklch(0.2 0.012 155 / 0.35);
     backdrop-filter: saturate(180%) blur(18px);

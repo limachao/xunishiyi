@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FeatureGrid } from '@/components/ui/feature-grid';
 import { TeamSectionBlock } from '@/components/ui/team-section-block-shadcnui';
+import { UserNav } from '@/components/auth/user-nav';
 
 export default function HomePage() {
   return (
@@ -20,12 +21,15 @@ export default function HomePage() {
             <Link href="/try" className="transition hover:text-foreground">试衣间</Link>
             <Link href="#how-it-works" className="transition hover:text-foreground">使用方法</Link>
           </div>
-          <Button asChild size="sm" className="h-9 rounded-xl px-4">
-            <Link href="/try">
-              立即试穿
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <UserNav />
+            <Button asChild size="sm" className="h-9 rounded-xl px-4">
+              <Link href="/try">
+                立即试穿
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 

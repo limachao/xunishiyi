@@ -7,6 +7,7 @@ export type TryOnErrorCode =
   | 'INVALID_IMAGE'
   | 'CLOTHING_CATEGORY_NOT_SUPPORTED'
   | 'INSUFFICIENT_CREDITS'
+  | 'UNAUTHORIZED'
   | 'PROVIDER_RATE_LIMITED'
   | 'PROVIDER_AUTH_FAILED'
   | 'PROVIDER_ERROR'
@@ -99,6 +100,8 @@ export function userMessageForCode(code: TryOnErrorCode): string {
       return '当前版本仅支持上衣、下装和连衣裙，一次试穿一件。';
     case 'INSUFFICIENT_CREDITS':
       return '免费试穿次数已用完，升级套餐即可继续使用。';
+    case 'UNAUTHORIZED':
+      return '请先登录后再进行试穿。';
     case 'PROVIDER_RATE_LIMITED':
       return '请求过于频繁或本月额度已用完，请约 30 秒后重试，或联系管理员升级额度。';
     case 'PROVIDER_AUTH_FAILED':

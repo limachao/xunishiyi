@@ -43,6 +43,8 @@ export interface ImageUploaderProps {
   disabled?: boolean;
   loading?: boolean;
   showReplace?: boolean;
+  /** 上传动作前校验（如登录拦截），返回 false 则终止本次上传 */
+  onBeforePick?: () => boolean;
   onFileChange: (file: File, previewUrl: string) => void;
   onClear?: () => void;
 }
@@ -68,6 +70,7 @@ export function ImageUploader({
   disabled,
   loading,
   showReplace = true,
+  onBeforePick,
   onFileChange,
   onClear,
 }: ImageUploaderProps) {
@@ -142,13 +145,15 @@ export function ImageUploader({
       e.preventDefault();
       setIsDragging(false);
       if (disabled || loading) return;
+      if (onBeforePick && !onBeforePick()) return;
       handleFiles(e.dataTransfer.files);
     },
-    [disabled, loading, handleFiles],
+    [disabled, loading, handleFiles, onBeforePick],
   );
 
   const handleChooseClick = () => {
     if (disabled || loading) return;
+    if (onBeforePick && !onBeforePick()) return;
     inputRef.current?.click();
   };
 
@@ -160,6 +165,7 @@ export function ImageUploader({
 
   const handleSampleClick = (sample: ImageSample) => {
     if (disabled || loading) return;
+    if (onBeforePick && !onBeforePick()) return;
     const width = 480;
     const height = 640;
     try {

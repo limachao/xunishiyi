@@ -35,6 +35,36 @@ export function UsageMeter({ className }: UsageMeterProps) {
   const { user, usage } = useGame();
   const info = React.useMemo(() => computeUsage(usage ?? user?.usage), [user?.usage, usage]);
 
+  // 未登录：显示登录引导
+  if (!user.isAuthenticated) {
+    return (
+      <div
+        className={cn(
+          'flex items-center gap-2.5 rounded-[1.1rem] border border-white/10 bg-white/[0.04] px-2.5 py-1.5 shadow-[0_1px_0_rgba(255,255,255,0.05)_inset] backdrop-blur-2xl sm:min-w-[210px] sm:max-w-[260px]',
+          className,
+        )}
+      >
+        <div
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[0.85rem] bg-[oklch(0.62_0.11_195_/_0.12)] shadow-[0_0_0_1px_oklch(0.62_0.11_195_/_0.24)_inset] icon-red"
+          aria-hidden
+        >
+          <Zap className="h-3.5 w-3.5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="truncate text-[11px] font-medium text-white/60">未登录</span>
+            <span className="shrink-0 text-[11px] font-semibold text-primary">
+              登录后可试穿
+            </span>
+          </div>
+          <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
+            <div className="h-full w-0 rounded-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const nearLimit = info.pct >= 80;
   const depleted = info.remaining <= 0;
   const label = planLabel(user?.subscription?.plan);

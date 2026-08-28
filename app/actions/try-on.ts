@@ -11,6 +11,7 @@ import {
   makeRequestId,
 } from '@/services/ai-try-on';
 import { verifyTurnstileToken } from '@/lib/turnstile';
+import { getCurrentUser } from '@/lib/session';
 import type { ClothingCategory, TryResult } from '@/types/game';
 import type {
   ActionError,
@@ -90,6 +91,17 @@ export async function generateTryOn(
   input: GenerateTryOnInput,
 ): Promise<ActionResult<GenerateTryOnOutput>> {
   try {
+    // 登录校验：未登录不允许试穿
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return {
+        ok: false,
+        code: 'UNAUTHORIZED',
+        message: '请先登录后再进行试穿。',
+        retryable: false,
+      };
+    }
+
     // Turnstile 人机验证：防止机器人刷 API 额度
     const ts = await verifyTurnstileToken(input.turnstileToken, 'try-on');
     if (!ts.ok) {

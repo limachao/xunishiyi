@@ -48,6 +48,18 @@ export const uploadTypeEnum = pgEnum('upload_type', [
   'CLOTHING',
 ]);
 
+export const paymentTypeEnum = pgEnum('payment_type', [
+  'SUBSCRIPTION',
+  'CREDIT_PACK',
+]);
+
+export const paymentStatusEnum = pgEnum('payment_status', [
+  'PENDING',
+  'SUCCEEDED',
+  'FAILED',
+  'REFUNDED',
+]);
+
 export const users = pgTable(
   'users',
   {
@@ -282,5 +294,85 @@ export const verificationTokens = pgTable(
       'verification_tokens_identifier_token_unique'
     ).on(table.identifier, table.token),
     tokenUniqueIdx: uniqueIndex('verification_tokens_token_unique').on(table.token),
+  })
+);
+
+export const payments = pgTable(
+  'payments',
+  {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    type: paymentTypeEnum('type').notNull(),
+    plan: subscriptionPlanEnum('plan'),
+    creditsPack: integer('credits_pack'),
+    amountCents: integer('amount_cents').notNull(),
+    currency: varchar('currency', { length: 10 }).notNull().default('usd'),
+    status: paymentStatusEnum('status').notNull().default('PENDING'),
+    creditsGranted: integer('credits_granted').notNull().default(0),
+    stripeSessionId: varchar('stripe_session_id', { length: 255 }).unique(),
+    stripeInvoiceId: varchar('stripe_invoice_id', { length: 255 }).unique(),
+    stripePaymentIntentId: varchar('stripe_payment_intent_id', { length: 255 }).unique(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    userCreatedAtIdx: index('payments_user_id_created_at_idx').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    statusIdx: index('payments_status_idx').on(table.status),
+  })
+);
+
+export const stripeWebhookEvents = pgTable(
+  'stripe_webhook_events',
+  {
+    id: serial('id').primaryKey(),
+    eventId: varchar('event_id', { length: 255 }).notNull().unique(),
+    eventType: varchar('event_type', { length: 100 }).notNull(),
+    payload: text('payload').notNull(),
+    processed: boolean('processed').notNull().default(false),
+    processedAt: timestamp('processed_at', { withTimezone: true }),
+    error: varchar('error', { length: 500 }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    eventIdUniqueIdx: uniqueIndex('stripe_webhook_events_event_id_unique').on(table.eventId),
+    eventTypeIdx: index('stripe_webhook_events_event_type_idx').on(table.eventType),
+  })
+);
+
+export const guestUsage = pgTable(
+  'guest_usage',
+  {
+    id: serial('id').primaryKey(),
+    anonymousId: varchar('anonymous_id', { length: 100 }).notNull(),
+    ipHash: varchar('ip_hash', { length: 100 }),
+    totalCredits: integer('total_credits').notNull().default(5),
+    usedCredits: integer('used_credits').notNull().default(0),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    anonymousIdUniqueIdx: uniqueIndex('guest_usage_anonymous_id_unique').on(table.anonymousId),
+    ipHashIdx: index('guest_usage_ip_hash_idx').on(table.ipHash),
+  })
+);
+
+export const admins = pgTable(
+  'admins',
+  {
+    id: serial('id').primaryKey(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
+    name: varchar('name', { length: 100 }),
+    hashedPassword: varchar('hashed_password', { length: 255 }).notNull(),
+    lastLoginAt: timestamp('last_login_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    emailUniqueIdx: uniqueIndex('admins_email_unique').on(table.email),
   })
 );

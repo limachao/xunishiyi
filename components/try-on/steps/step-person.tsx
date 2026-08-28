@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ImageUploader, type ImageSample } from '@/components/ui/image-uploader';
 import { QuotaExceededModal } from '@/components/subscription/quota-exceeded-modal';
+import { useAuthGate } from '@/components/auth/auth-gate-provider';
 
 const PERSON_SAMPLES: ImageSample[] = [
   {
@@ -35,6 +36,7 @@ const PERSON_SAMPLES: ImageSample[] = [
 
 export function StepPerson() {
   const { session, dispatch, hasEnoughCredits } = useGame();
+  const { requireAuth } = useAuthGate();
   const [quotaOpen, setQuotaOpen] = React.useState(false);
 
   const hasImage = Boolean(session.personPhotoUrl);
@@ -71,6 +73,7 @@ export function StepPerson() {
           aspectRatioHint="推荐全身照比例"
           samples={PERSON_SAMPLES}
           error={session.error}
+          onBeforePick={requireAuth}
           onFileChange={handlePersonChange}
           onClear={handleClear}
           tips={[
