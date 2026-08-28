@@ -41,7 +41,15 @@ export async function verifyTurnstileToken(
       }),
     });
     if (!res.ok) {
-      console.error('[Turnstile] siteverify HTTP error:', res.status);
+      let bodyText = '';
+      try {
+        bodyText = (await res.text()).slice(0, 500);
+      } catch {
+        // ignore
+      }
+      console.error(
+        `[Turnstile] siteverify HTTP error: status=${res.status}, body=${bodyText || '(empty)'}`,
+      );
       return { ok: false, message: '人机验证服务暂时不可用，请稍后重试。' };
     }
     const result = (await res.json()) as {
@@ -60,7 +68,8 @@ export async function verifyTurnstileToken(
     }
     return { ok: true };
   } catch (e) {
-    console.error('[Turnstile] siteverify request failed:', e);
+    const cause = (e as { cause?: unknown })?.cause;
+    console.error('[Turnstile] siteverify request failed:', e, 'cause:', cause);
     return { ok: false, message: '人机验证服务暂时不可用，请稍后重试。' };
   }
 }
