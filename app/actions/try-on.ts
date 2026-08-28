@@ -10,6 +10,7 @@ import {
   getDefaultAiTryOnProvider,
   makeRequestId,
 } from '@/services/ai-try-on';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 import type { ClothingCategory, TryResult } from '@/types/game';
 import type {
   ActionError,
@@ -89,6 +90,17 @@ export async function generateTryOn(
   input: GenerateTryOnInput,
 ): Promise<ActionResult<GenerateTryOnOutput>> {
   try {
+    // Turnstile 人机验证：防止机器人刷 API 额度
+    const ts = await verifyTurnstileToken(input.turnstileToken, 'try-on');
+    if (!ts.ok) {
+      return {
+        ok: false,
+        code: 'UNKNOWN',
+        message: ts.message ?? '人机验证未通过，请刷新页面重试。',
+        retryable: false,
+      };
+    }
+
     if (!input.personImageDataUrl || !input.clothingImageDataUrl) {
       return {
         ok: false,

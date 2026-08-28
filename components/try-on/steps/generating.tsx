@@ -19,6 +19,7 @@ import type { ActionError } from '@/lib/try-on-types';
 import type { ClothingCategory as CategoryType } from '@/types/game';
 import { QuotaExceededModal } from '@/components/subscription/quota-exceeded-modal';
 import { userMessageForCode } from '@/lib/validators';
+import { TurnstileWidget, isTurnstileEnabled } from '@/components/turnstile/TurnstileWidget';
 
 const CATEGORY_META: Record<
   Exclude<CategoryType, 'UNKNOWN'>,
@@ -59,9 +60,12 @@ export function Generating() {
   const triggeredRef = React.useRef(false);
   const [quotaOpen, setQuotaOpen] = React.useState(false);
   const [localError, setLocalError] = React.useState<string | null>(null);
+  const turnstileEnabled = React.useMemo(() => isTurnstileEnabled(), []);
+  const [tsToken, setTsToken] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!session.isGenerating) return;
+    if (turnstileEnabled && !tsToken) return; // 等待人机验证通过
     if (triggeredRef.current) return;
     if (!personPhotoUrl || !clothingPhotoUrl) return;
 
@@ -105,6 +109,7 @@ export function Generating() {
           clothingFilename: clothingPhoto?.name,
           creditsRequired: needCredits,
           clientRemainingCredits: usage.remainingCredits,
+          turnstileToken: tsToken ?? undefined,
         };
         console.debug('[Generating] calling generateTryOn:', {
           personStartsWith: payload.personImageDataUrl.slice(0, 16),
@@ -164,7 +169,7 @@ export function Generating() {
       window.clearTimeout(timerId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session.isGenerating, personPhotoUrl, clothingPhotoUrl]);
+  }, [session.isGenerating, personPhotoUrl, clothingPhotoUrl, tsToken, turnstileEnabled]);
 
   const handleFailure = (err: ActionError, refund: boolean) => {
     if (refund) refundCredit();
@@ -283,6 +288,13 @@ export function Generating() {
             <p className="max-w-md text-[11px] leading-relaxed text-white/45">
               生成结果仅作参考，实际版型、垂感、面料细节可能与预览略有差异。
             </p>
+            {turnstileEnabled && (
+              <TurnstileWidget
+                action="try-on"
+                onToken={setTsToken}
+                className="min-h-[65px] flex items-center justify-center"
+              />
+            )}
             <Button variant="ghost" size="sm" asChild className="text-white/55 hover:text-white/80">
               <Link href="/try" onClick={handleCancel}>
                 取消并返回上一步

@@ -12,7 +12,7 @@ export function isAdminRequest(req: NextRequest): boolean {
 
 export function requireAdminMiddleware(req: NextRequest) {
   if (!isAdminRequest(req)) {
-    return NextResponse.redirect(new URL('/', req.url));
+    return NextResponse.redirect(new URL('/admin/login', req.url));
   }
   return NextResponse.next();
 }

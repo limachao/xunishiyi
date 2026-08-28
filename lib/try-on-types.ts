@@ -22,6 +22,8 @@ export interface GenerateTryOnInput {
   clothingFilename?: string;
   creditsRequired?: number;
   clientRemainingCredits?: number;
+  /** Cloudflare Turnstile 人机验证 token */
+  turnstileToken?: string;
 }
 
 export interface GenerateTryOnOutput {
