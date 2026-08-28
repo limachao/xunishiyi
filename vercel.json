@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/actions/try-on.ts": {
+      "maxDuration": 90
+    }
+  }
+}

@@ -35,7 +35,12 @@ export function Result() {
   const [comparisonPct, setComparisonPct] = React.useState(50);
   const [isSaving, setIsSaving] = React.useState(false);
   const [justSaved, setJustSaved] = React.useState(false);
+  const [imgLoadError, setImgLoadError] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setImgLoadError(false);
+  }, [result?.resultImageUrl]);
 
   const handleSliderMove = (clientX: number) => {
     const el = sliderRef.current;
@@ -173,7 +178,14 @@ export function Result() {
                       alt="试穿预览"
                       className="absolute inset-0 h-full w-full object-contain"
                       draggable={false}
+                      onError={() => setImgLoadError(true)}
+                      onLoad={() => setImgLoadError(false)}
                     />
+                    {imgLoadError && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-sm text-white/70">
+                        图片加载失败，请刷新重试
+                      </div>
+                    )}
                   </div>
                   <div
                     className="pointer-events-none absolute top-0 bottom-0 w-[2px] bg-white/95 shadow-[0_0_14px_rgba(255,255,255,0.3)]"
