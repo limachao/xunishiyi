@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { requireAdminMiddleware } from '@/lib/admin';
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith('/admin')) {
