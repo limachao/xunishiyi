@@ -10,9 +10,7 @@ export function proxy(req: NextRequest) {
   }
 
   if (pathname.startsWith('/admin')) {
-    if (req.method === 'POST') {
-      return NextResponse.next();
-    }
+    // 所有 /admin 页面统一走管理员会话校验（登录 API 在 /api/admin 下，不受此 matcher 影响）
     return requireAdminMiddleware(req);
   }
 
